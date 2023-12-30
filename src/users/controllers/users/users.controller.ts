@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Req, Res } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Body, Controller, Get, Post } from '@nestjs/common';
+import { createUserDto } from 'src/users/dtos/CreateUser.dto';
 
 @Controller('users')
 export class UsersController {
@@ -40,8 +40,8 @@ export class UsersController {
   }
 
   @Post('create')
-  createUser(@Req() request: Request, @Res() response: Response) {
-    console.log(request.body);
-    response.send('Created');
+  createUser(@Body() userData: createUserDto) {
+    console.log(userData);
+    return {};
   }
 }
