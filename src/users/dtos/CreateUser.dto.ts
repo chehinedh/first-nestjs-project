@@ -1,4 +1,11 @@
+/* eslint-disable prettier/prettier */
+import { IsEmail, IsNotEmpty } from 'class-validator';
+
 export class createUserDto {
-  usernames: string;
+  @IsNotEmpty()
+  username: string;
+
+  @IsEmail()
+  @IsNotEmpty()
   email: string;
 }
