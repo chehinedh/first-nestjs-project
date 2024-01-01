@@ -2,22 +2,30 @@ import {
   Body,
   Controller,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
-  ParseBoolPipe,
   ParseIntPipe,
   Post,
-  Query,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { createUserDto } from 'src/users/dtos/CreateUser.dto';
+import { UsersService } from 'src/users/services/users/users.service';
 
 @Controller('users')
 export class UsersController {
+  constructor(private userService: UsersService) {}
+
+  //   @Get()
+  //   getUsers(@Query('sortDesc', ParseBoolPipe) sortDesc: boolean) {
+  //     console.log(sortDesc);
+  //     return { username: 'Chehine', email: 'chehine@gmail.com' };
+  //   }
+
   @Get()
-  getUsers(@Query('sortDesc', ParseBoolPipe) sortDesc: boolean) {
-    console.log(sortDesc);
-    return { username: 'Chehine', email: 'chehine@gmail.com' };
+  getUsers() {
+    return this.userService.fetchUsers();
   }
 
   @Get('posts')
@@ -55,12 +63,14 @@ export class UsersController {
   @UsePipes(new ValidationPipe())
   createUser(@Body() userData: createUserDto) {
     console.log(userData);
-    return {};
+    return this.userService.createUsers(userData);
   }
 
   @Get(':id')
   getUserById(@Param('id', ParseIntPipe) id: number) {
-    console.log(id);
-    return { id };
+    const user = this.userService.fetchUserById(id);
+    if (!user)
+      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
+    return user;
   }
 }
